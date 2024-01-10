@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/illacloud/illa-supervisor-backend/src/authenticator"
@@ -452,6 +453,62 @@ func (controller *Controller) DeleteUser(c *gin.Context) {
 	errInDeleteTeamMember := controller.Storage.TeamMemberStorage.DeleteByUserID(userID)
 	if errInDeleteTeamMember != nil {
 		controller.FeedbackBadRequest(c, ERROR_FLAG_CAN_NOT_DELETE_TEAM_MEMBER, "delete user from team member by user id error: "+errInDeleteTeamMember.Error())
+		return
+	}
+
+	// ok, feedback
+	controller.FeedbackOK(c, nil)
+	return
+}
+
+func (controller *Controller) SignUp(c *gin.Context) {
+	// get request body
+	req := model.NewSignUpRequest()
+	if err := json.NewDecoder(c.Request.Body).Decode(&req); err != nil {
+		controller.FeedbackBadRequest(c, ERROR_FLAG_PARSE_REQUEST_BODY_FAILED, "parse request body error: "+err.Error())
+		return
+	}
+
+	// validate payload required fields
+	validate := validator.New()
+	if err := validate.Struct(req); err != nil {
+		controller.FeedbackBadRequest(c, ERROR_FLAG_VALIDATE_REQUEST_BODY_FAILED, "validate request body error: "+err.Error())
+		return
+	}
+
+	// fetch verification token from cache
+	var errInFetchJWTToken error
+	req.VerificationToken, errInFetchJWTToken = controller.Cache.JWTCache.GetTokenByEmail(req.Email)
+	if errInFetchJWTToken != nil {
+		controller.FeedbackBadRequest(c, ERROR_FLAG_CAN_NOT_FETCH_JWT_TOKEN_FROM_CACHE, "fetch jwt token from cache failed: "+errInFetchJWTToken.Error())
+		return
+	}
+
+	// validate verification code
+	validCode, err := model.ValidateVerificationCode(req.VerificationCode, req.VerificationToken,
+		req.Email, "signup")
+	if !validCode || err != nil {
+		controller.FeedbackBadRequest(c, ERROR_FLAG_VALIDATE_VERIFICATION_CODE_FAILED, "validate verification code error: "+err.Error())
+		return
+	}
+
+	// password
+	hashPwd, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+	if err != nil {
+		controller.FeedbackBadRequest(c, ERROR_FLAG_GENERATE_PASSWORD_FAILED, "generate password error: "+err.Error())
+		return
+	}
+
+	user := model.User{
+		UID:            uuid.New(),
+		PasswordDigest: string(hashPwd),
+		Nickname:       req.Nickname,
+		Email:          req.Email,
+		Avatar:         "",
+	}
+
+	if _, err := controller.Storage.UserStorage.Create(&user); err != nil {
+		controller.FeedbackBadRequest(c, ERROR_FLAG_CAN_NOT_CREATE_USER, "update user password error: "+err.Error())
 		return
 	}
 
