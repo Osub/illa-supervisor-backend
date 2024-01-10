@@ -33,18 +33,18 @@ type Config struct {
 	// server config
 	ServerHost         string `env:"ILLA_SERVER_HOST"              envDefault:"0.0.0.0"`
 	ServerPort         string `env:"ILLA_SERVER_PORT"              envDefault:"8003"`
-	InternalServerPort string `env:"ILLA_SERVER_INTERNAL_PORT"     envDefault:"9001"`
+	InternalServerPort string `env:"ILLA_SERVER_INTERNAL_PORT"     envDefault:"9011"`
 	ServerMode         string `env:"ILLA_SERVER_MODE"              envDefault:"debug"`
-	DeployMode         string `env:"ILLA_DEPLOY_MODE"              envDefault:"self-host"`
+	DeployMode         string `env:"ILLA_DEPLOY_MODE"              envDefault:"cloud"`
 	SecretKey          string `env:"ILLA_SECRET_KEY"               envDefault:"8xEMrWkBARcDDYQ"`
 	ServeHTTPS         string `env:"ILLA_DEPLOY_SERVE_HTTPS"       envDefault:"false"`
 
 	// storage config
 	PostgresAddr     string `env:"ILLA_SUPERVISOR_PG_ADDR" envDefault:"localhost"`
 	PostgresPort     string `env:"ILLA_SUPERVISOR_PG_PORT" envDefault:"5432"`
-	PostgresUser     string `env:"ILLA_SUPERVISOR_PG_USER" envDefault:"illa_supervisor"`
-	PostgresPassword string `env:"ILLA_SUPERVISOR_PG_PASSWORD" envDefault:"illa2022"`
-	PostgresDatabase string `env:"ILLA_SUPERVISOR_PG_DATABASE" envDefault:"illa_supervisor"`
+	PostgresUser     string `env:"ILLA_SUPERVISOR_PG_USER" envDefault:"postgres"`
+	PostgresPassword string `env:"ILLA_SUPERVISOR_PG_PASSWORD" envDefault:"postgres"`
+	PostgresDatabase string `env:"ILLA_SUPERVISOR_PG_DATABASE" envDefault:"postgres"`
 	// cache config
 	RedisAddr     string `env:"ILLA_REDIS_ADDR" envDefault:"localhost"`
 	RedisPort     string `env:"ILLA_REDIS_PORT" envDefault:"6379"`
