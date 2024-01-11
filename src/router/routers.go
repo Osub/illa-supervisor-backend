@@ -19,7 +19,7 @@ func NewRouter(controller *controller.Controller, authenticator *authenticator.A
 }
 
 func (r *Router) RegisterRouters(engine *gin.Engine) {
-	routerGroup := engine.Group("/api/v1")
+	routerGroup := engine.Group("/supervisor/api/v1")
 
 	authRouter := routerGroup.Group("/auth")
 	usersRouter := routerGroup.Group("/users")
