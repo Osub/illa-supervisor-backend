@@ -505,10 +505,12 @@ func (controller *Controller) SignUp(c *gin.Context) {
 		Nickname:       req.Nickname,
 		Email:          req.Email,
 		Avatar:         "",
+		SSOConfig:      "{\"default\": \"\"}",
+		Customization:  "{\"Language\": \"en-US\", \"IsSubscribed\": false}",
 	}
 
 	if _, err := controller.Storage.UserStorage.Create(&user); err != nil {
-		controller.FeedbackBadRequest(c, ERROR_FLAG_CAN_NOT_CREATE_USER, "update user password error: "+err.Error())
+		controller.FeedbackBadRequest(c, ERROR_FLAG_CAN_NOT_CREATE_USER, "create user  error: "+err.Error())
 		return
 	}
 
