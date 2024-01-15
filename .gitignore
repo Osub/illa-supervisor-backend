@@ -11,7 +11,6 @@
 *.swp
 
 # docker
-*dockerfile*
 
 # bin
 main
