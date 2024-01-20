@@ -32,7 +32,7 @@ FROM alpine:latest as runner
 WORKDIR /opt/illa/illa-supervisor-backend/bin/
 
 ## copy backend bin
-COPY --from=builder-for-supervisor-backend /opt/illa/illa-supervisor-backend/bin/illa-builder-backend /opt/illa/illa-supervisor-backend/bin/
+COPY --from=builder-for-supervisor-backend /opt/illa/illa-supervisor-backend/bin/illa-supervisor-backend /opt/illa/illa-supervisor-backend/bin/
 
 
 RUN ls -alh /opt/illa/illa-supervisor-backend/bin/
@@ -41,4 +41,4 @@ RUN ls -alh /opt/illa/illa-supervisor-backend/bin/
 
 # run
 EXPOSE 8003
-CMD ["/bin/sh", "-c", "/opt/illa/illa-builder-backend/bin/illa-builder-backend"]
+CMD ["/bin/sh", "-c", "/opt/illa/illa-supervisor-backend/bin/illa-supervisor-backend"]
