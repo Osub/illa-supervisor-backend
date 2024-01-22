@@ -225,3 +225,23 @@ func (u *UserSSOConfig) Export() string {
 	r, _ := json.Marshal(u)
 	return string(r)
 }
+
+func NewPendingUserByInviteForExport(inviteForExport *InviteForExport) (*User, error) {
+	var errInExport error
+	ssoc := NewUserSSOConfig()
+	uc := NewUserCustomization()
+	user := NewUser()
+	user.Nickname = PENDING_USER_NICKNAME
+	user.PasswordDigest = PENDING_USER_PASSWORDDIGEST
+	user.Email = inviteForExport.Email
+	user.Avatar = PENDING_USER_AVATAR
+	user.SSOConfig = ssoc.Export()
+	user.Customization, errInExport = uc.Export()
+	if errInExport != nil {
+		return nil, errInExport
+	}
+	user.InitUID()
+	user.InitCreatedAt()
+	user.InitUpdatedAt()
+	return user, nil
+}

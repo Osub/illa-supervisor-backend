@@ -250,3 +250,10 @@ func (tp *TeamPermission) DoesViewerCanManageTeamMember() bool {
 func (tp *TeamPermission) DoesBlockRegister() bool {
 	return tp.BlockRegister
 }
+
+func (u *Team) ConfigInviteLinkByRequest(req *ConfigInviteLinkRequest) {
+	tp := u.ExportTeamPermission()
+	tp.InviteLinkEnabled = req.InviteLinkEnabled
+	u.Permission = tp.ExportForTeam()
+	u.InitUpdatedAt()
+}

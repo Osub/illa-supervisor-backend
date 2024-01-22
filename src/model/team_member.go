@@ -262,3 +262,29 @@ func BuildTeamIDLookUpTableForTeamMemberExport(teamMembers []*TeamMember) map[in
 	}
 	return lt
 }
+
+func NewTeamMemberByInviteAndUserID(invite *Invite, userID int) *TeamMember {
+	tmp := NewTeamMemberPermission()
+	TeamMember := NewTeamMember()
+	TeamMember.TeamID = invite.ExportTeamID()
+	TeamMember.UserID = userID
+	TeamMember.UserRole = invite.ExportUserRole()
+	TeamMember.Permission = tmp.ExportForTeam()
+	TeamMember.Status = TEAM_MEMBER_STATUS_OK
+	TeamMember.InitCreatedAt()
+	TeamMember.InitUpdatedAt()
+	return TeamMember
+}
+
+func NewPendingTeamMemberByInvite(invite *Invite) *TeamMember {
+	tmp := NewTeamMemberPermission()
+	TeamMember := NewTeamMember()
+	TeamMember.TeamID = invite.ExportTeamID()
+	TeamMember.UserID = PENDING_USER_ID
+	TeamMember.UserRole = invite.ExportUserRole()
+	TeamMember.Permission = tmp.ExportForTeam()
+	TeamMember.Status = TEAM_MEMBER_STATUS_PENDING
+	TeamMember.InitCreatedAt()
+	TeamMember.InitUpdatedAt()
+	return TeamMember
+}
